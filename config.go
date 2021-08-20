@@ -68,6 +68,49 @@ func ReadConfig(configObj interface{}, debug bool) error {
 	return nil
 }
 
+func ReadCertainConfig(configObj interface{}, filePath string) error {
+	// reading config file
+	configFileContent, err := readFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	// converting it to key-value map
+	configMap, err := convertJSONtoMap(configFileContent)
+	if err != nil {
+		return err
+	}
+
+	// application config JSON
+	appConfigJSON, err := convertObjectToJSON(configObj)
+	if err != nil {
+		return err
+	}
+
+	// application config map
+	appConfigMap, err := convertJSONtoMap(appConfigJSON)
+	if err != nil {
+		return err
+	}
+
+	// joining two maps
+	for key, value := range configMap {
+		appConfigMap[key] = value
+	}
+
+	// read config parse to json
+	readConfigJSON, err := convertMapToJson(appConfigMap)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(readConfigJSON, &configObj); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func convertObjectToJSON(obj interface{}) ([]byte, error) {
 	objJSON, err := json.Marshal(obj)
 	if err != nil {

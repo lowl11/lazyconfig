@@ -33,26 +33,37 @@ func checkAllTransformations(paths ...string) (bool, error) {
 		configMapList = append(configMapList, configMap)
 	}
 
-	configMapKeyList := make([]string, 0)
+	configMapKeyList := make([][]string, 0)
 	for _, configMap := range configMapList {
-		var keys string
+		keysList := make([]string, 0)
 		for key, _ := range configMap {
-			keys += key
+			keysList = append(keysList, key)
 		}
-		configMapKeyList = append(configMapKeyList, keys)
+		configMapKeyList = append(configMapKeyList, keysList)
 	}
 
 	if len(configMapKeyList) > 0 {
-		previousKeyList := configMapKeyList[0]
+		firstMapKeyList := configMapKeyList[0]
 		for _, keyList := range configMapKeyList {
-			if previousKeyList != keyList {
-				return false, nil
+			for _, key := range firstMapKeyList {
+				if !contains(keyList, key) {
+					return false, nil
+				}
 			}
-			previousKeyList = keyList
 		}
 	}
 
 	return true, nil
+}
+
+func contains(array []string, searchValue string) bool {
+	for _, value := range array {
+		if value == searchValue {
+			return true
+		}
+	}
+
+	return false
 }
 
 func getConfigurationMap(path string) (map[string]interface{}, error) {
