@@ -5,18 +5,20 @@ import (
 	"errors"
 )
 
-func ReadConfig(configObj interface{}, debug bool) error {
+func Read(configObj interface{}, debug bool) error {
 	if err := initConfigFiles(); err != nil {
 		return err
 	}
 
-	configurationsChecked, err := checkAllTransformations(configFileDebug, configFileRelease)
-	if err != nil {
-		return err
-	}
+	if debug {
+		configurationsChecked, err := checkAllTransformations(configFileDebug, configFileRelease)
+		if err != nil {
+			return err
+		}
 
-	if !configurationsChecked {
-		return errors.New("[lazyconfig] Configurations has no the same keys")
+		if !configurationsChecked {
+			return errors.New("[lazyconfig] Configurations has no the same keys")
+		}
 	}
 
 	var configFilePath string
@@ -61,14 +63,14 @@ func ReadConfig(configObj interface{}, debug bool) error {
 		return err
 	}
 
-	if err := json.Unmarshal(readConfigJSON, &configObj); err != nil {
+	if err = json.Unmarshal(readConfigJSON, &configObj); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func ReadCertainConfig(configObj interface{}, filePath string) error {
+func ReadCertain(configObj interface{}, filePath string) error {
 	// reading config file
 	configFileContent, err := readFile(filePath)
 	if err != nil {
@@ -104,7 +106,7 @@ func ReadCertainConfig(configObj interface{}, filePath string) error {
 		return err
 	}
 
-	if err := json.Unmarshal(readConfigJSON, &configObj); err != nil {
+	if err = json.Unmarshal(readConfigJSON, &configObj); err != nil {
 		return err
 	}
 

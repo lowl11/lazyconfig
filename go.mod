@@ -1,3 +1,3 @@
 module github.com/lowl11/lazyconfig
 
-go 1.15
+go 1.18
