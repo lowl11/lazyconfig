@@ -1,6 +1,12 @@
-package lazyconfig
+package confapi
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/lowl11/lazyfile/fileapi"
+	"github.com/lowl11/lazyfile/folderapi"
+)
 
 const (
 	configFolderPath  = "config"
@@ -8,9 +14,31 @@ const (
 	configFileRelease = "config/config_release.json"
 )
 
+func convertObjectToJSON(obj interface{}) ([]byte, error) {
+	objJSON, err := json.Marshal(obj)
+	if err != nil {
+		return nil, err
+	}
+
+	return objJSON, nil
+}
+
+func convertJSONtoMap(jsonContent []byte) (map[string]interface{}, error) {
+	jsonMap := make(map[string]interface{}, 0)
+	if err := json.Unmarshal(jsonContent, &jsonMap); err != nil {
+		return nil, err
+	}
+
+	return jsonMap, nil
+}
+
+func convertMapToJson(configMap map[string]interface{}) ([]byte, error) {
+	return json.Marshal(configMap)
+}
+
 func initConfigFiles() error {
-	if !isFolderExist(configFolderPath) {
-		if err := createFolder(configFolderPath); err != nil {
+	if folderapi.NotExist(configFolderPath) {
+		if err := folderapi.Create("./", configFolderPath); err != nil {
 			return err
 		}
 	}
@@ -27,7 +55,7 @@ func checkAllTransformations(paths ...string) (bool, error) {
 	for _, path := range paths {
 		configMap, err := getConfigurationMap(path)
 		if err != nil {
-			return false, err
+			return false, errors.New(path + " file read error: " + err.Error())
 		}
 
 		configMapList = append(configMapList, configMap)
@@ -36,7 +64,7 @@ func checkAllTransformations(paths ...string) (bool, error) {
 	configMapKeyList := make([][]string, 0)
 	for _, configMap := range configMapList {
 		keysList := make([]string, 0)
-		for key, _ := range configMap {
+		for key := range configMap {
 			keysList = append(keysList, key)
 		}
 		configMapKeyList = append(configMapKeyList, keysList)
@@ -66,14 +94,15 @@ func contains(array []string, searchValue string) bool {
 	return false
 }
 
-func getConfigurationMap(path string) (map[string]interface{}, error) {
-	fileContent, err := readFile(path)
+func getConfigurationMap(path string) (map[string]any, error) {
+	fileContent, err := fileapi.Read(path)
 	if err != nil {
 		return nil, err
 	}
 
-	configMap := make(map[string]interface{}, 0)
-	if err := json.Unmarshal(fileContent, &configMap); err != nil {
+	configMap := make(map[string]any)
+	if err = json.Unmarshal(fileContent, &configMap); err != nil {
+		fmt.Println("still here")
 		return nil, err
 	}
 
@@ -82,11 +111,12 @@ func getConfigurationMap(path string) (map[string]interface{}, error) {
 
 func createConfigFile(paths ...string) error {
 	for _, path := range paths {
-		if !isFileExist(path) {
-			if err := createFile(path); err != nil {
+		if !fileapi.Exist(path) {
+			if err := fileapi.Create(path, nil); err != nil {
 				return err
 			}
 		}
 	}
+
 	return nil
 }

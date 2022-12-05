@@ -1,2 +1,6 @@
 .idea
 config
+*.log
+logs
+main.go
+lazyconfig
