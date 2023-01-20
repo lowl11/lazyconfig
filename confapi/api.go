@@ -12,7 +12,7 @@ func Read(configObj interface{}, production bool) error {
 	}
 
 	if !production {
-		configurationsChecked, err := checkAllTransformations(configFileDebug, configFileRelease)
+		configurationsChecked, err := checkAllTransformations(configFileTest, configFileProduction)
 		if err != nil {
 			return err
 		}
@@ -24,9 +24,9 @@ func Read(configObj interface{}, production bool) error {
 
 	var configFilePath string
 	if !production {
-		configFilePath = configFileDebug
+		configFilePath = configFileTest
 	} else {
-		configFilePath = configFileRelease
+		configFilePath = configFileProduction
 	}
 
 	// reading config file

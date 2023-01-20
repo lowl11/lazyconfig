@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	configFolderPath  = "config"
-	configFileDebug   = "config/config_debug.json"
-	configFileRelease = "config/config_release.json"
+	configFolderPath     = "config"
+	configFileTest       = "config/test.json"
+	configFileProduction = "config/production.json"
 )
 
 func convertObjectToJSON(obj interface{}) ([]byte, error) {
@@ -43,7 +43,7 @@ func initConfigFiles() error {
 		}
 	}
 
-	if err := createConfigFile(configFileDebug, configFileRelease); err != nil {
+	if err := createConfigFile(configFileTest, configFileProduction); err != nil {
 		return err
 	}
 

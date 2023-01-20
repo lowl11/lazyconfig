@@ -7,7 +7,7 @@
 package main
 
 import (
-	"github.com/Lowl11/lazyconfig"
+	"github.com/lowl11/lazyconfig"
 	"log"
 )
 
@@ -18,7 +18,7 @@ type Configuration struct {
 func main() {
 	config := &Configuration{}
 	debug := true
-	if err := lazyconfig.ReadConfig(&config, debug); err != nil {
+	if err := lazyconfig.Read(&config, debug); err != nil {
 		log.Fatal(err)
 	}	
 }
