@@ -3,7 +3,6 @@ package confapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/lowl11/lazyfile/fileapi"
 	"github.com/lowl11/lazyfile/folderapi"
 )
@@ -102,7 +101,6 @@ func getConfigurationMap(path string) (map[string]any, error) {
 
 	configMap := make(map[string]any)
 	if err = json.Unmarshal(fileContent, &configMap); err != nil {
-		fmt.Println("still here")
 		return nil, err
 	}
 
