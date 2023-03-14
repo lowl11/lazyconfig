@@ -1,8 +1,8 @@
-# LazyConfig
+# lazyconfig
 
-> Библиотека для генерирования и поддержания конфигурационных файлов для приложений Go
+> Simple config library with big customization
 
-Пример использования
+#### Simple example:
 ```go
 package main
 
@@ -12,14 +12,19 @@ import (
 )
 
 type Configuration struct {
-	TestKey string `json:"test_key"`
+	Server struct {
+		Port string `json:"port"`
+	} `json:"server"`
 }
 
 func main() {
-	config := &Configuration{}
-	debug := true
-	if err := lazyconfig.Read(&config, debug); err != nil {
-		log.Fatal(err)
-	}	
+	config, err := confapi.New[Configuration]().
+		EnvironmentDefault("local").
+		Read()
+	if err != nil {
+		log.Fatal("Read config err:", err)
+	}
+
+	fmt.Printf("Config: %v\n", config)
 }
 ```
