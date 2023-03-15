@@ -64,12 +64,12 @@ func (event *Event[T]) replaceEnvVariables(fileContent []byte) ([]byte, error) {
 		envKeyName = strings.ReplaceAll(envKeyName, "}}", "")
 
 		if value, ok := event.env[envKeyName]; ok {
-			fileContentString = strings.ReplaceAll(fileContentString, envKeyName, value)
+			fileContentString = strings.ReplaceAll(fileContentString, envVariable, value)
 		} else {
 			if osValue := os.Getenv(envKeyName); osValue != "" {
-				fileContentString = strings.ReplaceAll(fileContentString, envKeyName, osValue)
+				fileContentString = strings.ReplaceAll(fileContentString, envVariable, osValue)
 			} else {
-				fileContentString = strings.ReplaceAll(fileContentString, envKeyName, "")
+				fileContentString = strings.ReplaceAll(fileContentString, envVariable, "")
 			}
 		}
 	}
