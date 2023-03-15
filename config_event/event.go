@@ -2,18 +2,16 @@ package config_event
 
 type Event[T any] struct {
 	object             Object[T]
-	configurations     map[string]string
+	env                map[string]string
+	envFileName        string
 	environmentName    string
 	environmentDefault string
 }
 
 func New[T any]() *Event[T] {
 	return &Event[T]{
-		configurations: map[string]string{
-			"local":      "local",
-			"test":       "test",
-			"production": "production",
-		},
+		env:                make(map[string]string),
+		envFileName:        envFileNameDefault,
 		environmentName:    environmentName,
 		environmentDefault: environmentDefault,
 	}
