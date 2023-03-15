@@ -24,6 +24,10 @@ func (event *Event[T]) fileName(value string) string {
 }
 
 func (event *Event[T]) readEnv() error {
+	if !fileapi.Exist(event.envFileName) {
+		return nil
+	}
+
 	fileContent, err := fileapi.Read(event.envFileName)
 	if err != nil {
 		return err
