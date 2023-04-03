@@ -1,17 +1,11 @@
 package config_event
 
-const (
-	environmentName    = "env"
-	environmentDefault = "test"
-
-	configFolderBase   = "profiles/"
-	envFileNameDefault = ".env"
-)
+import "github.com/lowl11/lazyconfig/config_data"
 
 type Object[T any] struct {
 	Body T
 }
 
 func (event *Event[T]) fileName(value string) string {
-	return configFolderBase + value + ".json"
+	return config_data.ConfigFolder + value + ".json"
 }

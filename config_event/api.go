@@ -2,6 +2,7 @@ package config_event
 
 import (
 	"encoding/json"
+	"github.com/lowl11/lazyconfig/config_data"
 	"github.com/lowl11/lazyconfig/services/env_helper"
 	"github.com/lowl11/lazyfile/fileapi"
 	"log"
@@ -11,15 +12,15 @@ import (
 func (event *Event[T]) Read() (*T, error) {
 	// read .env file
 	var err error
-	event.env, err = env_helper.Read(event.envFileName)
+	event.env, err = env_helper.Read(config_data.GetEnvFileName())
 	if err != nil {
 		return nil, err
 	}
 
 	// read environment name value
-	environmentValue := os.Getenv(event.environmentName)
+	environmentValue := os.Getenv(config_data.GetEnvironmentName())
 	if environmentValue == "" {
-		environmentValue = event.environmentDefault
+		environmentValue = config_data.GetEnvironmentDefault()
 	}
 
 	// config file name
@@ -42,30 +43,22 @@ func (event *Event[T]) Read() (*T, error) {
 		return nil, err
 	}
 
-	log.Println("Loaded", "'"+environmentValue+"'", "environment configuration")
+	log.Println("Loaded config", "'"+environmentValue+"'", "environment configuration")
 
 	return &event.object.Body, nil
 }
 
 func (event *Event[T]) EnvironmentName(name string) *Event[T] {
-	if name == "" {
-		return event
-	}
-
-	event.environmentName = name
+	config_data.SetEnvironmentName(name)
 	return event
 }
 
 func (event *Event[T]) EnvironmentDefault(value string) *Event[T] {
-	event.environmentDefault = value
+	config_data.SetEnvironmentDefault(value)
 	return event
 }
 
 func (event *Event[T]) EnvFileName(fileName string) *Event[T] {
-	if fileName == "" {
-		return event
-	}
-
-	event.envFileName = fileName
+	config_data.SetEnvFileName(fileName)
 	return event
 }

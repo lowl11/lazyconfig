@@ -1,13 +1,7 @@
 package config_map_event
 
-const (
-	environmentName    = "env"
-	environmentDefault = "test"
-
-	configFolderBase   = "profiles/"
-	envFileNameDefault = ".env"
-)
+import "github.com/lowl11/lazyconfig/config_data"
 
 func (event *Event) fileName(value string) string {
-	return configFolderBase + value + ".yml"
+	return config_data.ConfigFolder + value + ".yml"
 }
