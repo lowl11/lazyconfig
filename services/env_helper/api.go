@@ -9,18 +9,19 @@ import (
 )
 
 func Read(fileName string) (map[string]string, error) {
+	envVariables := make(map[string]string)
+
 	if !fileapi.Exist(fileName) {
-		return nil, nil
+		return envVariables, nil
 	}
 
 	fileContent, err := fileapi.Read(fileName)
 	if err != nil {
-		return nil, err
+		return envVariables, err
 	}
 
 	combinations := strings.Split(string(fileContent), "\n")
 
-	envVariables := make(map[string]string)
 	for _, combo := range combinations {
 		dividedCombo := strings.Split(combo, "=")
 		if len(dividedCombo) == 1 {

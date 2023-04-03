@@ -17,6 +17,9 @@ func (event *Event) Read() error {
 	// read .env file
 	var err error
 	event.env, err = env_helper.Read(config_data.GetEnvFileName())
+	if err != nil {
+		return err
+	}
 
 	// read environment name value
 	environmentValue := os.Getenv(config_data.GetEnvironmentName())
