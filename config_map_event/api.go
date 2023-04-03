@@ -1,20 +1,21 @@
-package config_event
+package config_map_event
 
 import (
-	"encoding/json"
 	"github.com/lowl11/lazyconfig/services/env_helper"
 	"github.com/lowl11/lazyfile/fileapi"
+	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 )
 
-func (event *Event[T]) Read() (*T, error) {
+func (event *Event) Get(key string) string {
+	return event.object[key]
+}
+
+func (event *Event) Read() error {
 	// read .env file
 	var err error
 	event.env, err = env_helper.Read(event.envFileName)
-	if err != nil {
-		return nil, err
-	}
 
 	// read environment name value
 	environmentValue := os.Getenv(event.environmentName)
@@ -28,26 +29,26 @@ func (event *Event[T]) Read() (*T, error) {
 	// read config file
 	fileContent, err := fileapi.Read(fileName)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// replace variables like "{{variable_name}}" to .env values
 	fileContent, err = env_helper.ReplaceVariables(fileContent, event.env)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// parse file content to Configuration struct object
-	if err = json.Unmarshal(fileContent, &event.object.Body); err != nil {
-		return nil, err
+	if err = yaml.Unmarshal(fileContent, &event.object); err != nil {
+		return err
 	}
 
 	log.Println("Loaded", "'"+environmentValue+"'", "environment configuration")
 
-	return &event.object.Body, nil
+	return nil
 }
 
-func (event *Event[T]) EnvironmentName(name string) *Event[T] {
+func (event *Event) EnvironmentName(name string) *Event {
 	if name == "" {
 		return event
 	}
@@ -56,12 +57,12 @@ func (event *Event[T]) EnvironmentName(name string) *Event[T] {
 	return event
 }
 
-func (event *Event[T]) EnvironmentDefault(value string) *Event[T] {
+func (event *Event) EnvironmentDefault(value string) *Event {
 	event.environmentDefault = value
 	return event
 }
 
-func (event *Event[T]) EnvFileName(fileName string) *Event[T] {
+func (event *Event) EnvFileName(fileName string) *Event {
 	if fileName == "" {
 		return event
 	}
