@@ -1,5 +1,5 @@
 .idea
-config
+profiles
 .env
 *.log
 logs

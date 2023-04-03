@@ -11,7 +11,7 @@ const (
 	environmentName    = "env"
 	environmentDefault = "test"
 
-	configFolderBase   = "config/"
+	configFolderBase   = "profiles/"
 	envFileNameDefault = ".env"
 )
 
