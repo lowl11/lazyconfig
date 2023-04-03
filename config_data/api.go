@@ -2,6 +2,10 @@ package config_data
 
 const (
 	ConfigFolder = "profiles/"
+
+	EnvironmentName    = "env"
+	EnvironmentDefault = "local"
+	EnvFileNameDefault = ".env"
 )
 
 func SetEnvironmentName(name string) {
