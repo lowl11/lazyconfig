@@ -4,7 +4,7 @@ const (
 	ConfigFolder = "profiles/"
 
 	EnvironmentName    = "env"
-	EnvironmentDefault = "local"
+	EnvironmentDefault = "dev"
 	EnvFileNameDefault = ".env"
 )
 
