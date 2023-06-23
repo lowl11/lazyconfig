@@ -1,8 +1,8 @@
 package confapi
 
 import (
-	"github.com/lowl11/lazyconfig/config_event"
-	"github.com/lowl11/lazyconfig/config_map_event"
+	"github.com/lowl11/lazyconfig/internal/config_event"
+	"github.com/lowl11/lazyconfig/internal/config_map_event"
 )
 
 var (

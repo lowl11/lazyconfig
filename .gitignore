@@ -1,7 +1,10 @@
 .idea
 profiles
+.vscode
 .env
 *.log
 logs
 main.go
 lazyconfig
+*.png
+cmd
