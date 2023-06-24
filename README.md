@@ -2,41 +2,42 @@
 
 > Simple config library with big customization
 
-#### Simple example:
-```go
-package main
+### Get started
+Create directory <b>/profiles</b> in the root of your project <br>
+Configuration file name depends on your "env" variable <br>
+If "env" variables equals to "production", configuration file name should be "production.yml" <br>
+For not duplicating variables in configuration files, you can create base <b>config.yml</b> file 
 
+First, need to initialize config
+```go
 import (
-	"github.com/lowl11/lazyconfig"
-	"log"
+    "github.com/lowl11/lazyconfig/config/config_internal"
 )
 
-type Configuration struct {
-	Server struct {
-		Port string `json:"port"`
-	} `json:"server"`
+func main() {
+    config_internal.Init()
 }
+```
+
+After that, you have access to config variables from anywhere
+```go
+import (
+    "fmt"
+    "github.com/lowl11/lazyconfig/config"
+    "github.com/lowl11/lazyconfig/config/config_internal"
+)
 
 func main() {
-	config, err := confapi.New[Configuration]().
-		EnvironmentDefault("local").
-		Read()
-	if err != nil {
-		log.Fatal("Read config err:", err)
-	}
-
-	fmt.Printf("Config: %v\n", config)
+    // initialize config variables
+    config_internal.Init()
+	
+    // get variables 
+    fmt.Println("database connection:", config.Get("database_connection"))
+    fmt.Println("max connections:", config.Get("max_connections"))
+    fmt.Println("some basic value:", config.Get("some_basic_thing"))
+    fmt.Println("colvir username:", config.Get("colvir_username"))
+    fmt.Println("colvir password:", config.Get("colvir_password"))	
 }
 ```
 
-#### Example with all methods
-```go
-config, err := confapi.New[Configuration]().
-		EnvironmentDefault("local"). // if there is no any value in "env" variable, you can set default
-		EnvironmentName("").         // usually lib looking for "env" variable, but you can change it
-		EnvFileName("").             // for replace variables usually uses ".env" file, but you can change it
-		Read()
-if err != nil {
-    log.Fatal("Read config err:", err)
-}
-```
+### Customization
