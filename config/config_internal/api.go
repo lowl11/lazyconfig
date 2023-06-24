@@ -15,6 +15,22 @@ func Init() {
 	configService := config_service.
 		New()
 
+	if _environmentVariableName != "" {
+		configService.EnvironmentVariableName(_environmentVariableName)
+	}
+
+	if _environmentFileName != "" {
+		configService.EnvironmentFileName(_environmentFileName)
+	}
+
+	if _environment != "" {
+		configService.Environment(_environment)
+	}
+
+	if _baseFolder != "" {
+		configService.BaseFolder(_baseFolder)
+	}
+
 	_configServicePool = sync.Pool{
 		New: func() any {
 			return configService
@@ -33,4 +49,20 @@ func Get(key string) string {
 	}
 
 	return configPtr.Get(key)
+}
+
+func SetEnvironment(value string) {
+	_environment = value
+}
+
+func SetBaseFolder(folderPath string) {
+	_baseFolder = folderPath
+}
+
+func SetEnvironmentFileName(fileName string) {
+	_environmentFileName = fileName
+}
+
+func SetEnvironmentVariableName(variableName string) {
+	_environmentVariableName = variableName
 }

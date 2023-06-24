@@ -41,3 +41,11 @@ func main() {
 ```
 
 ### Customization
+To customize variable names and folder paths, use <b>config_internal</b> package <br>
+!!! But use it before <b>config_internal.Init()</b> function
+```go
+func main() {
+    config_internal.SetBaseFolder("configs")
+    config_internal.Init()
+}
+```
