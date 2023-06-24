@@ -3,25 +3,34 @@ package config_internal
 import (
 	"github.com/lowl11/lazyconfig/internal/services/config_service"
 	"log"
+	"sync"
 )
 
 var (
-	_configService *config_service.Service
+	// _configServicePool contains *config_service.Service
+	_configServicePool sync.Pool
 )
 
 func Init() {
-	_configService = config_service.
+	configService := config_service.
 		New()
 
-	if err := _configService.Read(); err != nil {
+	_configServicePool = sync.Pool{
+		New: func() any {
+			return configService
+		},
+	}
+
+	if err := configService.Read(); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func Get(key string) string {
-	if _configService == nil {
+	configPtr := _configServicePool.Get().(*config_service.Service)
+	if configPtr == nil {
 		panic("configService is NULL")
 	}
 
-	return _configService.Get(key)
+	return configPtr.Get(key)
 }
