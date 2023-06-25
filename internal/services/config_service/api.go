@@ -104,16 +104,28 @@ func (service *Service) BaseFolder(baseFolder string) *Service {
 }
 
 func (service *Service) Environment(environment string) *Service {
+	if environment == "" {
+		return service
+	}
+
 	service.environment = environment
 	return service
 }
 
 func (service *Service) EnvironmentVariableName(variableName string) *Service {
+	if variableName == "" {
+		return service
+	}
+
 	service.environmentVariableName = variableName
 	return service
 }
 
 func (service *Service) EnvironmentFileName(fileName string) *Service {
+	if fileName == "" {
+		return service
+	}
+
 	service.environmentFileName = fileName
 	return service
 }
