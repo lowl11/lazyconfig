@@ -6,6 +6,7 @@ import (
 	"github.com/lowl11/lazyfile/fileapi"
 	"github.com/lowl11/lazyfile/folderapi"
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 func (service *Service) Read() error {
@@ -54,6 +55,22 @@ func (service *Service) Read() error {
 	// even if variable with such key exist, need to check if in current it is empty
 	for key, baseValue := range baseVariables {
 		if currentValue, ok := service.variables[key]; (!ok || currentValue == "") && baseValue != "" {
+			if varValue, isVariable := env_helper.IsVariable(baseValue); isVariable {
+				fileValue, fileOk := envFileContent[varValue]
+				if fileOk {
+					service.variables[key] = fileValue
+				} else {
+					osValue := os.Getenv(varValue)
+					if osValue != "" {
+						service.variables[key] = os.Getenv(varValue)
+					}
+				}
+
+				if service.variables[key] != "" {
+					continue
+				}
+			}
+
 			service.variables[key] = baseValue
 		}
 	}

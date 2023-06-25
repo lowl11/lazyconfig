@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 func Read(fileName string) (map[string]string, error) {
@@ -71,4 +72,17 @@ func ReplaceVariables(fileContent []byte, envVariables map[string]string) ([]byt
 
 	// convert file content to bytes once
 	return []byte(fileContentString), nil
+}
+
+func IsVariable(value string) (string, bool) {
+	length := utf8.RuneCountInString(value)
+	if length < 4 {
+		return "", false
+	}
+
+	if value[0] == '{' && value[1] == '{' && value[length-1] == '}' && value[length-2] == '}' {
+		return value[2 : length-2], true
+	}
+
+	return "", false
 }
