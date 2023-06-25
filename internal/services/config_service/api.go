@@ -55,22 +55,27 @@ func (service *Service) Read() error {
 	// even if variable with such key exist, need to check if in current it is empty
 	for key, baseValue := range baseVariables {
 		if currentValue, ok := service.variables[key]; (!ok || currentValue == "") && baseValue != "" {
+			// if basic config value is "variable"
 			if varValue, isVariable := env_helper.IsVariable(baseValue); isVariable {
+				// try getting value of variable from .env file
 				fileValue, fileOk := envFileContent[varValue]
 				if fileOk {
 					service.variables[key] = fileValue
 				} else {
+					// if no .env value, try search it in environment
 					osValue := os.Getenv(varValue)
 					if osValue != "" {
 						service.variables[key] = os.Getenv(varValue)
 					}
 				}
 
+				// if there is no value in .env file & environment
 				if service.variables[key] != "" {
 					continue
 				}
 			}
 
+			// set value
 			service.variables[key] = baseValue
 		}
 	}
