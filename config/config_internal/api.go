@@ -6,24 +6,31 @@ import (
 	"sync"
 )
 
-func Init() {
+type Config struct {
+	EnvironmentVariableName string
+	EnvironmentFileName     string
+	Environment             string
+	BaseFolder              string
+}
+
+func Init(config Config) {
 	configService := config_service.
 		New()
 
-	if _environmentVariableName != "" {
-		configService.EnvironmentVariableName(_environmentVariableName)
+	if config.EnvironmentVariableName != "" {
+		configService.EnvironmentVariableName(config.EnvironmentVariableName)
 	}
 
-	if _environmentFileName != "" {
-		configService.EnvironmentFileName(_environmentFileName)
+	if config.EnvironmentFileName != "" {
+		configService.EnvironmentFileName(config.EnvironmentFileName)
 	}
 
-	if _environment != "" {
-		configService.Environment(_environment)
+	if config.Environment != "" {
+		configService.Environment(config.Environment)
 	}
 
-	if _baseFolder != "" {
-		configService.BaseFolder(_baseFolder)
+	if config.BaseFolder != "" {
+		configService.BaseFolder(config.BaseFolder)
 	}
 
 	_configServicePool = sync.Pool{
@@ -44,20 +51,4 @@ func Get(key string) string {
 	}
 
 	return configPtr.Get(key)
-}
-
-func SetEnvironment(value string) {
-	_environment = value
-}
-
-func SetBaseFolder(folderPath string) {
-	_baseFolder = folderPath
-}
-
-func SetEnvironmentFileName(fileName string) {
-	_environmentFileName = fileName
-}
-
-func SetEnvironmentVariableName(variableName string) {
-	_environmentVariableName = variableName
 }
