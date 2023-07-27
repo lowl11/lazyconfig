@@ -56,16 +56,15 @@ func ReplaceVariables(fileContent []byte, envVariables map[string]string) ([]byt
 	// replace variables
 	variables := variableRegex.FindAllString(fileContentString, -1)
 	for _, envVariable := range variables {
-		envKeyName := strings.ReplaceAll(envVariable, "{{", "")
-		envKeyName = strings.ReplaceAll(envKeyName, "}}", "")
-
-		if value, ok := envVariables[envKeyName]; ok {
-			fileContentString = strings.ReplaceAll(fileContentString, envVariable, value)
-		} else {
-			if osValue := os.Getenv(envKeyName); osValue != "" {
-				fileContentString = strings.ReplaceAll(fileContentString, envVariable, osValue)
+		if cleanVariableValue, isVariable := IsVariable(envVariable); isVariable {
+			if value, ok := envVariables[cleanVariableValue]; ok {
+				fileContentString = strings.ReplaceAll(fileContentString, envVariable, value)
 			} else {
-				fileContentString = strings.ReplaceAll(fileContentString, envVariable, "")
+				if osValue := os.Getenv(cleanVariableValue); osValue != "" {
+					fileContentString = strings.ReplaceAll(fileContentString, envVariable, osValue)
+				} else {
+					fileContentString = strings.ReplaceAll(fileContentString, envVariable, "")
+				}
 			}
 		}
 	}

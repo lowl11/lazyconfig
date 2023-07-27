@@ -29,6 +29,11 @@ func (service *Service) Read() error {
 			return err
 		}
 
+		envBaseContent, err = env_helper.ReplaceVariables(envBaseContent, envFileContent)
+		if err != nil {
+			return err
+		}
+
 		if err = yaml.Unmarshal(envBaseContent, &baseVariables); err != nil {
 			return err
 		}
