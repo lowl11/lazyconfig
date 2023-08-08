@@ -7,6 +7,7 @@ import (
 	"github.com/lowl11/lazyfile/folderapi"
 	"gopkg.in/yaml.v3"
 	"os"
+	"strings"
 )
 
 func (service *Service) Read() error {
@@ -39,8 +40,14 @@ func (service *Service) Read() error {
 		}
 	}
 
+	// build <environment>.yml file name
+	envFileName := service.environment + ".yml"
+	if !strings.Contains(envFileName, defaultBaseFolder) {
+		envFileName = defaultBaseFolder + envFileName
+	}
+
 	// read <environment>.yml file
-	envContent, err := fileapi.Read(service.environment + ".yml")
+	envContent, err := fileapi.Read(envFileName)
 	if err != nil {
 		return err
 	}
