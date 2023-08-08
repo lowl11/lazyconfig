@@ -39,12 +39,17 @@ func Init(config Config) {
 		},
 	}
 
+	_initialized = true
 	if err := configService.Read(); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func Get(key string) string {
+	if !_initialized {
+		return ""
+	}
+
 	configPtr := _configServicePool.Get().(*config_service.Service)
 	if configPtr == nil {
 		panic("configService is NULL")
